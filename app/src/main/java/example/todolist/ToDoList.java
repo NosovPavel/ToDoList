@@ -1,5 +1,6 @@
 package example.todolist;
 
+import android.app.FragmentManager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -13,45 +14,60 @@ import android.widget.ListView;
 import java.util.ArrayList;
 
 
-public class ToDoList extends ActionBarActivity {
+public class ToDoList extends ActionBarActivity implements OnNewItemAddedListener {
+
+    private ArrayAdapter<String> aa;
+    private ArrayList<String> toDoItems;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+
         //Загружаем представление
         setContentView(R.layout.activity_to_do_list);
 
+        //Получаем ссылки на фрагмент
+        FragmentManager fm = getFragmentManager();
+        ToDoListFragment toDoListFragment= (ToDoListFragment)fm.findFragmentById(R.id.toDoListFragment);
+
+
+
         //Получаем ссылки на элементы пользовательского интерфейса
-        ListView myListView = (ListView)findViewById(R.id.myListView);
-        final EditText myEditText = (EditText)findViewById(R.id.myEditText);
+//        ListView myListView = (ListView)findViewById(R.id.myListView);
+//        final EditText myEditText = (EditText)findViewById(R.id.myEditText);
 
         //Создаем массив для хранения списка задач
-        final ArrayList<String> toDoItems = new ArrayList<String>();
+//        final ArrayList<String> toDoItems = new ArrayList<String>();
 
         //Создаем Адаптер чтобы привязать массив к listView
-        final ArrayAdapter<String> aa = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,toDoItems);
+//        final ArrayAdapter<String> aa = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,toDoItems);
+
+        toDoItems = new ArrayList<String>();
+        aa = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,toDoItems);
 
         //Привязываем массив к listView
-        myListView.setAdapter(aa);
+//        myListView.setAdapter(aa);
 
-        //Создадим обработчик нажатий EditText
-        myEditText.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View view, int keyCode, KeyEvent keyEvent) {
-                if (keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
-                    if ((keyCode == KeyEvent.KEYCODE_DPAD_CENTER)||
-                    (keyCode == KeyEvent.KEYCODE_ENTER)){
-                        toDoItems.add(0,myEditText.getText().toString());
-                        aa.notifyDataSetChanged();
-                        myEditText.setText("");
-                        return true;
-                    }
-                    return false;
-                }
-                return false;
-            }
-        });
+        toDoListFragment.setListAdapter(aa);
+
+//        //Создадим обработчик нажатий EditText
+//        myEditText.setOnKeyListener(new View.OnKeyListener() {
+//            @Override
+//            public boolean onKey(View view, int keyCode, KeyEvent keyEvent) {
+//                if (keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
+//                    if ((keyCode == KeyEvent.KEYCODE_DPAD_CENTER)||
+//                    (keyCode == KeyEvent.KEYCODE_ENTER)){
+//                        toDoItems.add(0,myEditText.getText().toString());
+//                        aa.notifyDataSetChanged();
+//                        myEditText.setText("");
+//                        return true;
+//                    }
+//                    return false;
+//                }
+//                return false;
+//            }
+//        });
     }
 
 
@@ -72,5 +88,11 @@ public class ToDoList extends ActionBarActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onNewItemAdded(String newItem) {
+        toDoItems.add(newItem);
+        aa.notifyDataSetChanged();
     }
 }
