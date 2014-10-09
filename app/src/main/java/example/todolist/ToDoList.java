@@ -44,7 +44,8 @@ public class ToDoList extends ActionBarActivity implements OnNewItemAddedListene
 //        final ArrayAdapter<String> aa = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,toDoItems);
 
         toDoItems = new ArrayList<String>();
-        aa = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,toDoItems);
+        int resId = R.layout.todo_list_item;
+        aa = new ArrayAdapter<String>(this,resId,toDoItems);
 
         //Привязываем массив к listView
 //        myListView.setAdapter(aa);
