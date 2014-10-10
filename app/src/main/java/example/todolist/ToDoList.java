@@ -16,8 +16,8 @@ import java.util.ArrayList;
 
 public class ToDoList extends ActionBarActivity implements OnNewItemAddedListener {
 
-    private ArrayAdapter<String> aa;
-    private ArrayList<String> toDoItems;
+    private ToDoItemAdapter aa;
+    private ArrayList<ToDoItem> toDoItems;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,9 +43,9 @@ public class ToDoList extends ActionBarActivity implements OnNewItemAddedListene
         //Создаем Адаптер чтобы привязать массив к listView
 //        final ArrayAdapter<String> aa = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,toDoItems);
 
-        toDoItems = new ArrayList<String>();
+        toDoItems = new ArrayList<ToDoItem>();
         int resId = R.layout.todo_list_item;
-        aa = new ArrayAdapter<String>(this,resId,toDoItems);
+        aa = new ToDoItemAdapter(this,resId,toDoItems);
 
         //Привязываем массив к listView
 //        myListView.setAdapter(aa);
@@ -93,7 +93,8 @@ public class ToDoList extends ActionBarActivity implements OnNewItemAddedListene
 
     @Override
     public void onNewItemAdded(String newItem) {
-        toDoItems.add(newItem);
+        ToDoItem newTodoItem = new ToDoItem(newItem);
+        toDoItems.add(newTodoItem);
         aa.notifyDataSetChanged();
     }
 }
