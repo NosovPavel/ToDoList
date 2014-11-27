@@ -2,15 +2,21 @@ package example.todolist;
 
 import android.app.FragmentManager;
 import android.app.LoaderManager;
+import android.app.SearchManager;
+import android.app.SearchableInfo;
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.SearchView;
+import android.view.MenuInflater;
 
 import java.util.ArrayList;
 
@@ -32,46 +38,22 @@ public class ToDoList extends ActionBarActivity implements OnNewItemAddedListene
         FragmentManager fm = getFragmentManager();
         ToDoListFragment toDoListFragment= (ToDoListFragment)fm.findFragmentById(R.id.toDoListFragment);
 
-
-
-        //Получаем ссылки на элементы пользовательского интерфейса
-//        ListView myListView = (ListView)findViewById(R.id.myListView);
-//        final EditText myEditText = (EditText)findViewById(R.id.myEditText);
-
-        //Создаем массив для хранения списка задач
-//        final ArrayList<String> toDoItems = new ArrayList<String>();
-
-        //Создаем Адаптер чтобы привязать массив к listView
-//        final ArrayAdapter<String> aa = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,toDoItems);
-
         toDoItems = new ArrayList<ToDoItem>();
         int resId = R.layout.todo_list_item;
         aa = new ToDoItemAdapter(this,resId,toDoItems);
-
-        //Привязываем массив к listView
-//        myListView.setAdapter(aa);
 
         toDoListFragment.setListAdapter(aa);
 
         getLoaderManager().initLoader(0,null,this);
 
-//        //Создадим обработчик нажатий EditText
-//        myEditText.setOnKeyListener(new View.OnKeyListener() {
-//            @Override
-//            public boolean onKey(View view, int keyCode, KeyEvent keyEvent) {
-//                if (keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
-//                    if ((keyCode == KeyEvent.KEYCODE_DPAD_CENTER)||
-//                    (keyCode == KeyEvent.KEYCODE_ENTER)){
-//                        toDoItems.add(0,myEditText.getText().toString());
-//                        aa.notifyDataSetChanged();
-//                        myEditText.setText("");
-//                        return true;
-//                    }
-//                    return false;
-//                }
-//                return false;
-//            }
-//        });
+        Intent intent = getIntent();
+        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+            String query = intent.getStringExtra(SearchManager.QUERY);
+//            doMySearch(query);
+        }
+
+
+
     }
 
     @Override
@@ -83,8 +65,15 @@ public class ToDoList extends ActionBarActivity implements OnNewItemAddedListene
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.to_do_list, menu);
-        return true;
+        getMenuInflater().inflate( R.menu.to_do_list, menu );
+
+        // Add SearchWidget.
+        SearchManager searchManager = (SearchManager) getSystemService( Context.SEARCH_SERVICE );
+        SearchView searchView = (SearchView) menu.findItem( R.id.menu_search ).getActionView();
+
+        searchView.setSearchableInfo( searchManager.getSearchableInfo( getComponentName() ) );
+
+        return super.onCreateOptionsMenu( menu );
     }
 
     @Override
